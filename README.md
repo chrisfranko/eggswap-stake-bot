@@ -1,0 +1,1 @@
+# eggswap-stake-bot
