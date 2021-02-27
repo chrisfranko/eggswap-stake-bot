@@ -18,6 +18,7 @@
   "homepage": "https://github.com/chrisfranko/eggswap-stake-bot#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "ethers": "^5.0.31"
+    "ethers": "^5.0.31",
+    "node-schedule": "^2.0.0"
   }
 }

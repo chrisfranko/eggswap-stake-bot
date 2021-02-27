@@ -1,4 +1,5 @@
 require('dotenv').config();
+const schedule = require('node-schedule');
 
 const { ethers } = require("ethers");
 
@@ -10,16 +11,16 @@ const provider = new ethers.providers.JsonRpcProvider("https://node.expanse.tech
 const privKey = process.env.PRIVKEY;
 const wallet = new ethers.Wallet(privKey, provider);
 /*
-  Create EggMaker Object
+  Create Contract from abi and addr
 */
 const ABI = require("./abi/abi.EggMaker.json");
 const ADDR = "0xaCFe49957B0F794455DB556b01fF5943B36B69A9";
 const CONTRACT = new ethers.Contract(ADDR, ABI, wallet);
-/*
-  Connect Wallet To EggMaker
-*/
-//const EM = EggMaker.contract.connect(wallet);
 
+
+/*
+  TTASTY OKENS
+*/
 const WEXP = {name: 'WEXP', addr: '0x331631B4bb93b9B8962faE15860BD538a389395A'}; // WEXP
 
 const LAB = {name: 'LAB', addr: '0x3b4cfcc4532eec161860cb6544f49947544d940d'};
@@ -38,6 +39,7 @@ let tokens = [LAB, LOVE, EGG, T64, PEX, WAGMI, SVIT, PRM];
 let gasPrice = 10000000000;
 let gasLimit = 100000;
 
+/* Helper functions */
 const waitForTx = async (provider, hash) => {
     console.log(`Waiting for tx: ${hash}...`)
     while (!await provider.getTransactionReceipt(hash)) {
@@ -49,7 +51,9 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/* Main function because we like async and await
 async function main(){
+console.log('Starting asset conversion on the EggMaker contract.')
 
   for (i = 0; i < tokens.length; i++) {
 
@@ -58,6 +62,25 @@ async function main(){
     await waitForTx(provider, tx.hash)
   }
 
+console.log(`Finished conversion. Next job @ ${start.nextInvocation()}`)
 }
+ */
 
-main();
+
+/* Start that mother flerkin */
+console.log("Starting the scheduler.")
+
+const start = schedule.scheduleJob('0 */2 * * *', async function(){
+console.log('Starting asset conversion on the EggMaker contract.')
+
+  for (i = 0; i < tokens.length; i++) {
+
+    console.log(`Converting Token: ${tokens[i].name}  Address: ${tokens[i].addr}`);
+    const tx = await CONTRACT.convert(WEXP.addr, tokens[i].addr, { gasPrice: gasPrice, gasLimit: gasLimit});
+    await waitForTx(provider, tx.hash)
+  }
+
+console.log(`Finished conversion. Next job @ ${start.nextInvocation()}`)
+});
+
+console.log(`Next job @ ${start.nextInvocation()}`)
