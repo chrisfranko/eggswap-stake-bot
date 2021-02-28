@@ -36,8 +36,8 @@ const PRM = {name: 'PRM', addr: '0x87Eb2fdF607B46F324984771FfDF2A0396139bDf'};
 let tokens = [LAB, LOVE, EGG, T64, PEX, WAGMI, SVIT, PRM];
 //let tokens = [LAB];
 
-let gasPrice = 10000000000;
-let gasLimit = 100000;
+let gasPrice = 1000000000;
+let gasLimit = 7000000;
 
 /* Helper functions */
 const waitForTx = async (provider, hash) => {
