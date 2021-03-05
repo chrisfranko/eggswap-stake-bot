@@ -19,6 +19,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "ethers": "^5.0.31",
+    "node-fetch": "^2.6.1",
     "node-schedule": "^2.0.0"
   }
 }

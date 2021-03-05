@@ -51,8 +51,8 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/* Main function because we like async and await
-async function main(){
+/* Main function because we like async and await  */
+async function main(nextJob){
 console.log('Starting asset conversion on the EggMaker contract.')
 
   for (i = 0; i < tokens.length; i++) {
@@ -62,25 +62,23 @@ console.log('Starting asset conversion on the EggMaker contract.')
     await waitForTx(provider, tx.hash)
   }
 
-console.log(`Finished conversion. Next job @ ${start.nextInvocation()}`)
+console.log(`Finished conversion. Next job @ ${nextJob}`)
 }
- */
 
 
-/* Start that mother flerkin */
-console.log("Starting the scheduler.")
+async function run(){
+  console.log("Starting the scheduler.")
 
-const start = schedule.scheduleJob('0 */2 * * *', async function(){
-console.log('Starting asset conversion on the EggMaker contract.')
+  const start = schedule.scheduleJob('0 */2 * * *', async function(){
+    await main(start.nextInvocation());
+  });
 
-  for (i = 0; i < tokens.length; i++) {
-
-    console.log(`Converting Token: ${tokens[i].name}  Address: ${tokens[i].addr}`);
-    const tx = await CONTRACT.convert(WEXP.addr, tokens[i].addr, { gasPrice: gasPrice, gasLimit: gasLimit});
-    await waitForTx(provider, tx.hash)
+  if(process.env.STARTUP_TRIGGER){
+    console.log(`Initiating conversion on startup.`)
+    await main(start.nextInvocation());
   }
 
-console.log(`Finished conversion. Next job @ ${start.nextInvocation()}`)
-});
-
-console.log(`Next job @ ${start.nextInvocation()}`)
+  console.log(`Next job @ ${start.nextInvocation()}`)
+}
+/* Start that mother flerkin */
+run();
