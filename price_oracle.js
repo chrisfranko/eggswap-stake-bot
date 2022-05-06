@@ -52,8 +52,8 @@ async function job(nextJob){
     await waitForTx(provider, tx.hash)
 
     console.log(`Finished conversion. Next job @ ${nextJob}`)
-  }catche(e){
-    console.log(JSON.stringify(e))
+  }catch(e){
+    console.log(JSON.stringify(e));
   }
   
 }
