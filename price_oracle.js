@@ -42,15 +42,20 @@ async function job(nextJob){
   console.log('Starting Price Oracle Bot.')
 
   //get usd price
-  const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=expanse&vs_currencies=usd');
-  const data = await response.json();
-  const wei = utils.parseEther(data.expanse.usd.toString());
-  //set use price
-  console.log(`Setting USD Price : ${data.expanse.usd}`);
-  const tx = await CONTRACT.setPriceUsd(wei, { gasPrice: gasPrice, gasLimit: gasLimit});
-  await waitForTx(provider, tx.hash)
+  try{
+    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=expanse&vs_currencies=usd');
+    const data = await response.json();
+    const wei = utils.parseEther(data.expanse.usd.toString());
+    //set use price
+    console.log(`Setting USD Price : ${data.expanse.usd}`);
+    const tx = await CONTRACT.setPriceUsd(wei, { gasPrice: gasPrice, gasLimit: gasLimit});
+    await waitForTx(provider, tx.hash)
 
-  console.log(`Finished conversion. Next job @ ${nextJob}`)
+    console.log(`Finished conversion. Next job @ ${nextJob}`)
+  }catche(e){
+    console.log(JSON.stringify(e))
+  }
+  
 }
 
 
